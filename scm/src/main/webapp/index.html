@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>智库城系统</title>
+    <link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all-neptune.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/icon.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/desktop.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/tip.css">
+    <!-- var GV = {ctxPath: '${employee}', employeeId: '${employee.id}', username: '${employee.username}'};
+     -->
+    <script type="text/javascript" src="static/ctx_info.action"></script>
+
+    <script type="text/javascript" src="extjs/ext-all-debug.min.js"></script>
+    <script type="text/javascript" src="extjs/ext-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="assets/js/common.js"></script>
+    <script type="text/javascript">
+
+        var list, moduleArray = [],
+                getModulesArray = [],
+                requireJsArray = [ 'Ext.window.MessageBox', 'Ext.ux.desktop.ShortcutModel'],
+        //desktop/App.js   requires 数组
+                requreJs = {
+                    "order-win": 'EBDesktop.Order',
+                    "originalOrder-win": 'EBDesktop.originalOrder',
+                    "shipment-win": 'EBDesktop.Shipment',
+                    "stock-win": 'EBDesktop.Stock',
+                    "shop-win": 'EBDesktop.Shop',
+                    "config-win": 'EBDesktop.Config',
+                    "orderfetch-win": 'EBDesktop.OrderFetch',
+                    "product-win": 'EBDesktop.Product',
+                    "contract-win": 'EBDesktop.Contract',
+                    "log-win": 'EBDesktop.Log',
+                    "storageflowlog-win": 'EBDesktop.StorageFlowLog',
+                    "financial-win": 'EBDesktop.Financial',
+                    "payment-win": 'EBDesktop.Payment',
+                    "refund-win": 'EBDesktop.Refund',
+                    "logistics-win": 'EBDesktop.logistics.Win',
+                    "warehouse-win": 'EBDesktop.warehouse.Win',
+                    "gift-win": 'EBDesktop.gift.Win',
+                    "brand-win": 'EBDesktop.brand.Win',
+                    "supplier-win": 'EBDesktop.supplier.Win',
+                    "platform-win": 'EBDesktop.platform.Win',
+                    "productCategory-win": 'EBDesktop.productCategory.Win',
+                    "mealset-win": 'EBDesktop.mealset.Win'
+                },
+                //desktop/App.js   getModules 数组
+                getModulesObj = {
+                    "order-win": "EBDesktop.Order",
+                    "originalOrder-win": "EBDesktop.originalOrder",
+                    "shipment-win": "EBDesktop.Shipment",
+                    "stock-win": "EBDesktop.Stock",
+                    "shop-win": "EBDesktop.Shop",
+                    "product-win": "EBDesktop.Product",
+                    "contract-win": "EBDesktop.Contract",
+                    "log-win": "EBDesktop.Log",
+                    "storageflowlog-win": "EBDesktop.StorageFlowLog",
+                    "financial-win": "EBDesktop.Financial",
+                    "payment-win": "EBDesktop.Payment",
+                    "refund-win": "EBDesktop.Refund",
+                    "config-win": "EBDesktop.Config",
+                    "orderfetch-win": "EBDesktop.OrderFetch",
+                    "logistics-win": "EBDesktop.logistics.Win",
+                    "warehouse-win": "EBDesktop.warehouse.Win",
+                    "gift-win": "EBDesktop.gift.Win",
+                    "brand-win": "EBDesktop.brand.Win",
+                    "supplier-win": "EBDesktop.supplier.Win",
+                    "platform-win": "EBDesktop.platform.Win",
+                    "productCategory-win": "EBDesktop.productCategory.Win",
+                    "mealset-win": "EBDesktop.mealset.Win",
+                };
+
+        //根据用户id 获取对应模块以及加载相应的js文件
+        Ext.Ajax.request({
+            url: '/employee/resource',
+            params: {
+                employeeId: GV.employeeId
+            },
+            async: false,
+            success: function (response) {
+                var data = Ext.decode(response.responseText);
+                if (data.success) {
+                    list = data.data.list;
+
+                    Ext.each(list, function (listItem, index) {
+                        Ext.Object.each(requreJs, function (key, value, myself) {
+                            if (listItem.module == key) {
+                                requireJsArray.push(myself[key]);
+                            }
+                        });
+
+                    });
+
+                    Ext.each(list, function (listItem, index) {
+                        Ext.Object.each(getModulesObj, function (key, value, myself) {
+                            if (listItem.module == key) {
+                                getModulesArray.push(myself[key]);
+                            }
+                        });
+
+                    });
+
+                    moduleArray = list;
+                }
+            }
+        });
+
+        Ext.Loader.setConfig({
+            disableCaching: false,
+            enabled: true,
+            paths: {
+                'Ext.ux.desktop': 'assets/js/desktop/frame',
+                'EBDesktop': 'assets/js/desktop/'
+            }
+        });
+        Ext.require('EBDesktop.App');
+
+        var myDesktopApp;
+        Ext.onReady(function () {
+            myDesktopApp = new EBDesktop.App();
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>
